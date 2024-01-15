@@ -9,4 +9,4 @@ const bookSchema = mongoose.Schema({
   genre: { type: String, required: true },
 });
 
-module.exports = mongoose.model('Book', thingSchema);
+module.exports = mongoose.model('Book', bookSchema);
