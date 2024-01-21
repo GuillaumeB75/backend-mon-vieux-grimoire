@@ -73,7 +73,7 @@ exports.deleteBook = (req, res, next) => {
       });
 };
 
-exports.getAllBook = (req, res, next) => {
+exports.getAllBooks = (req, res, next) => {
   Book.find().then(
     (books) => {
       res.status(200).json(books);
