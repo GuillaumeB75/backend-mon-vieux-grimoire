@@ -89,20 +89,20 @@ exports.getAllBooks = (req, res, next) => {
 
 exports.ratingBook = (req, res, next) => {
   const { userId, rating } = req.body;
-  // Vérifier que la note est comprise entre 0 et 5
+  // je vérifie que la note est comprise entre 0 et 5
   if (rating < 0 || rating > 5) {
     return res.status(400).json({ message: 'La note doit être comprise entre 0 et 5.' });
   }
-  // Puis on recherche dans les données le livre avec l'ID fourni dans les paramètres de la requête
+  // je recherche dans les données le livre avec l'ID fourni dans les paramètres de la requête
   Book.findOne({ _id: req.params.id })
     .then((book) => {
-      // Vérifier si l'utilisateur a déjà noté ce livre
+      // Vérifie si l'utilisateur a déjà noté ce livre
       const userAlreadyRating = book.ratings.find((r) => r.userId === userId);
       if (userAlreadyRating) {
         return res.status(400).json({ message: 'Vous avez déjà noté ce livre.' });
       }
 
-      // Puis on ajoute la nouvelle note au tableau "ratings"
+      // la nouvelle note s'ajoute au tableau "ratings"
       book.ratings.push({ userId, grade: rating });
 
       // Puis on met à jour la note moyenne "averageRating"
@@ -120,7 +120,7 @@ exports.ratingBook = (req, res, next) => {
 };
 
 exports.getBestBooks = (req, res, next) => {
-  // recherche dans tous les livres
+ 
   // trie les résultats en fonction de la propriété averageRating par ordre décroissant donc les mieux notés en premier
   Book.find().sort({ averageRating: -1 }).limit(3)
     .then((books) => res.status(200).json(books))
