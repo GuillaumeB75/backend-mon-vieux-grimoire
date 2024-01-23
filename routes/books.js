@@ -1,14 +1,21 @@
+// _IMPORTATIONS_ //
+
 const express = require('express');
-const router = express.Router();
-const auth = require('../middleware/auth');
+const booksControllers = require('../controllers/books');
+const auth = require('../middleware/auth'); // importation de l'authentification avec token
 const multer = require('../middleware/multer-config');
 
-const bookCtrl = require('../controllers/books');
 
-router.get('/', auth, bookCtrl.getAllBooks);
-router.post('/', auth, multer, bookCtrl.createBook);
-router.get('/:id', auth, bookCtrl.getOneBook);
-router.put('/:id', auth, multer, bookCtrl.modifyBook);
-router.delete('/:id', auth, bookCtrl.deleteBook);
+// ROUTING //
+
+const router = express.Router();
+
+router.get('/', booksControllers.getAllBooks);
+router.get('/bestrating', booksControllers.getBestBooks);
+router.get('/:id', booksControllers.getOneBook);
+router.post('/', auth, multer, booksControllers.createBook);
+router.put('/:id', auth, multer, booksControllers.modifyBook);
+router.delete('/:id', auth, booksControllers.deleteBook);
+router.post('/:id/rating', auth, booksControllers.ratingBook);
 
 module.exports = router;
