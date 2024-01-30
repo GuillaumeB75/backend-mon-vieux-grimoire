@@ -1,14 +1,8 @@
-const fs = require("fs"); // module Node pour travailler sur les fichiers
-const Book = require("../models/Book"); // importation du modèle de données Book
+const fs = require("fs");
+const Book = require("../models/Book");
 
-// RÉCUPÉRATION DE TOUS LES LIVRES
-exports.getAllBooks = async (req, res, next) => {
-  Book.find()
-    .then((books) => res.status(200).json(books))
-    .catch((error) => res.status(400).json({ error }));
-};
 
-// AJOUT D'UN NOUVEAU LIVRE
+// création /ajout d'un nouveau livre
 exports.createBook = (req, res, next) => {
   // extrait le contenu du champ book de la requête et convertit le JSON en objet JS
   const bookObject = JSON.parse(req.body.book);
@@ -34,14 +28,14 @@ exports.createBook = (req, res, next) => {
     });
 };
 
-// RÉCUPÉRATION D'UN LIVRE SELON ID
+// récupère un livre selon son ID
 exports.getOneBook = async (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => res.status(200).json(book))
     .catch((error) => res.status(400).json({ error }));
 };
 
-// MODIFICATION D'UN LIVRE
+// modification d'un livre
 exports.modifyBook = (req, res, next) => {
   // Objet contenant les informations du livre à mettre à jour
   // Si nouvelle image, l'URL est mise à jour
@@ -90,7 +84,7 @@ exports.modifyBook = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-// SUPPRESSION D'UN LIVRE
+// suppression d'un livre
 exports.deleteBook = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -116,7 +110,7 @@ exports.deleteBook = (req, res, next) => {
     });
 };
 
-// RÉCUPÉRATION DES 3 LIVRES LES MIEUX NOTÉS
+// affichage des 3 livres les mieux notés
 exports.getBestBooks = (req, res, next) => {
   // recherche dans tous les livres
   // trie les résultats en fonction de la propriété averageRating par ordre décroissant donc les mieux notés en premier
@@ -130,26 +124,26 @@ exports.getBestBooks = (req, res, next) => {
 
 // notation
 exports.ratingBook = (req, res, next) => {
-  // On extrait les valeurs userId et rating du corps de la requête
+  // j'extrait les valeurs userId et rating du corps de la requête
   const { userId, rating } = req.body;
 
-  // Vérifier que la note est comprise entre 0 et 5
+  // je vérifie que la note est comprise entre 0 et 5
   if (rating < 0 || rating > 5) {
     return res
       .status(400)
       .json({ message: "La note doit être comprise entre 0 et 5." });
   }
 
-  // Puis on recherche dans les données le livre avec l'ID fourni dans les paramètres de la requête
+  // je recherche dans les données le livre avec l'ID fourni dans les paramètres de la requête
   Book.findOne({ _id: req.params.id })
     .then((book) => {
-      // Vérifier si l'utilisateur a déjà noté ce livre
+      // je vérifie si l'utilisateur a déjà noté ce livre
       const userAlreadyRating = book.ratings.find((r) => r.userId === userId);
       if (userAlreadyRating) {
         return res.status(403).json(new Error());
       }
 
-      // Puis on ajoute la nouvelle note au tableau "ratings"
+      // Puis j'ajoute la nouvelle note au tableau "ratings"
       book.ratings.push({ userId, grade: rating });
       // calcule le nombre total de livres notés
       const totalRatings = book.ratings.length;
@@ -157,7 +151,7 @@ exports.ratingBook = (req, res, next) => {
       // calcule la somme totale des notes
       let sumRatings = 0;
       for (const ratingEntry of book.ratings) {
-        const ratingValue = ratingEntry.grade; // ou ratingEntry.rating, selon la structure de votre objet
+        const ratingValue = ratingEntry.grade; 
         sumRatings += ratingValue;
       }
 
@@ -172,7 +166,7 @@ exports.ratingBook = (req, res, next) => {
       // Mise à jour de la moyenne des notes dans book
       book.averageRating = averageRatingRounded;
 
-      // Sauvegarder les modifications _ Promesse renvoyant le livre mis à jour
+      // Sauvegarder les modifications en renvoyant le livre mis à jour
       return book
         .save()
         .then((updatedBook) => res.status(200).json(updatedBook))
