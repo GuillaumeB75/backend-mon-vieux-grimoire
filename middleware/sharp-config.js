@@ -15,10 +15,9 @@ const imageConversion = (req, res, next) => {
 
   sharp(req.file.path)
     .resize({
-      width: 463,
-      height: 595,
-      fit: "inside",
-      withoutEnlargement: true,
+      width: 206,
+      height: 260,
+      fit: "cover",
     })
     .toFormat("webp", { quality: 90 })
     .toFile(newFilePath) // Utilise le nouveau chemin de fichier
