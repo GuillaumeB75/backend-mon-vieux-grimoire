@@ -7,11 +7,15 @@ const imageConversion = (req, res, next) => {
     return next();
   }
 
+  console.log("Original filename:", req.file.filename);
+
   // met le nom de fichier à jour avant utilisation de sharp
-  req.file.filename = req.file.filename.replace(/\.(jpg|jpeg|png)$/, ".webp");
+  req.file.filename = req.file.filename.replace(/(.*)(\.jpg|\.jpeg|\.png)(?=[^.]*$)/, "$1.webp");
+  console.log("Updated filename:", req.file.filename);
 
   // Construit le chemin complet où le fichier sera enregistré.
   const newFilePath = `images/${req.file.filename}`;
+  console.log("File path for Sharp:", newFilePath);
 
   sharp(req.file.path)
     .resize({
