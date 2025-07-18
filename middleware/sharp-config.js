@@ -10,7 +10,7 @@ const imageConversion = (req, res, next) => {
   console.log("Original filename:", req.file.filename);
 
   // met le nom de fichier à jour avant utilisation de sharp
-  req.file.filename = req.file.filename.replace(/(.*)(\.jpg|\.jpeg|\.png)(?=[^.]*$)/, "$1.webp");
+  req.file.filename = req.file.filename.replace(/(.*)(\.jpg|\.jpeg|\.png)(?=[^.]*$)/, "$1.webp"); // méthode regex
   console.log("Updated filename:", req.file.filename);
 
   // Construit le chemin complet où le fichier sera enregistré.
